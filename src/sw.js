@@ -20,7 +20,7 @@ addEventListener('activate', e => e.waitUntil(activate()));
 
 const getCachedResponse = async (e) => {
   const cache = await caches.open(cacheName);
-  const cachedResponse = cache.match(e.request);
+  const cachedResponse = await cache.match(e.request);
 
   return cachedResponse;
 }
