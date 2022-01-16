@@ -2,22 +2,26 @@ import React, {useCallback, useReducer} from 'react';
 import {render} from 'react-dom';
 
 const langResult = {
-  sugar: 'Dodać kg cukru',
-  water: 'Dolać litrów wody',
+  sugarAdd: 'Należy dodać',
+  waterAdd: 'Należy dolać',
+  sugar: 'kilogramów cukru',
+  water: 'litrów wody',
   no: 'Aby zobaczyć wynik należy uzupełnić wszystkie pola',
 }
 
 const algo = (wantedBLG, givenBLG, wortVolume) => {
   if (givenBLG < wantedBLG) {
     return [
-      langResult.sugar,
-      (((wantedBLG-givenBLG) / 100) * wortVolume).toFixed(2)
+      langResult.sugarAdd,
+      (((wantedBLG-givenBLG) / 100) * wortVolume).toFixed(2),
+      langResult.sugar
     ];
   }
 
   return [
-    langResult.water,
-    (((givenBLG - wantedBLG) * wortVolume) / wantedBLG).toFixed(2)
+    langResult.waterAdd,
+    (((givenBLG - wantedBLG) * wortVolume) / wantedBLG).toFixed(2),
+    langResult.water
   ];
 }
 const getResult = ({
@@ -26,7 +30,7 @@ const getResult = ({
   wortVolume,
  }) => {
   if (!(givenBLG && wantedBLG && wortVolume)) {
-    return [langResult.no, '...'];
+    return [langResult.no, '...', ' '];
   }
 
 
@@ -84,16 +88,16 @@ const App = () => {
   });
 
 
-  const [resultLang, resultValue] = getResult(state);
+  const [resultLang, resultValue, resultExt] = getResult(state);
   return (
     <main>
       <h1>BLG Calculator</h1>
       <form onSubmit={handleSubmit}>
         <FormFields state={state} onChange={handleUpdateFormField} />
-        <label>
-          {resultLang}
-          <input type="text" readOnly="readOnly" value={resultValue}/>
-        </label>
+        <p aria-live="assertive" className="result">
+          <span>{resultLang}</span>
+          <span>{resultValue} {resultExt}</span>
+        </p>
       </form>
     </main>
   );

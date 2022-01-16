@@ -13,12 +13,17 @@
 
 html, body {
   font-family: -apple-system, BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
-  display: grid;
+  font-size: 16px;
   min-height: 100%;
+}
+
+html, body, #root {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
   min-width: 100%;
   padding: 0;
   margin: 0;
-  font-size: 16px;
 }
 
 body {
@@ -41,6 +46,7 @@ main {
   margin: 2rem;
   padding: 1rem;
   max-width: 60ch;
+  width: 100%;
   border-radius: 10px;
   box-shadow: 0 0 40px rgba(0,0,0,0.4);
 
@@ -60,7 +66,19 @@ main {
 
       input {
         padding: .5rem 1rem;
+        border-radius: 5px;
+        border: none;
       }
     }
+  }
+}
+
+.result {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  span:nth-child(2) {
+    font-weight: 600;
+    font-size: 2rem;
   }
 }
