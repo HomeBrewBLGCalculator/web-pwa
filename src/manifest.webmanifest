@@ -1,0 +1,30 @@
+{
+  "short_name": "BLGCalc",
+  "name": "BLC Calculator",
+  "icons": [
+    {
+      "src": "./img/Icon16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+     {
+          "src": "./img/Icon64.png",
+          "sizes": "64x64",
+          "type": "image/png"
+    },
+     {
+          "src": "./img/Icon144.png",
+          "sizes": "144x144",
+          "type": "image/png"
+    },
+     {
+          "src": "./img/Icon196.png",
+          "sizes": "1196x196",
+          "type": "image/png"
+    }
+  ],
+  "start_url": "./",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff"
+}

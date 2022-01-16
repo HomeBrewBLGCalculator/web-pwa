@@ -1,0 +1,23 @@
+{
+  "name": "blgcalculator",
+  "version": "1.0.0",
+  "description": "BLG Calculator",
+  "repository": "https://github.com/sznowicki/blgcalculator",
+  "author": "Szymon Nowicki <sznowicki@eskalacja.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "parcel build src/index.html",
+    "dev": "parcel src/index.html"
+  },
+  "devDependencies": {
+    "@parcel/packager-raw-url": "^2.2.0",
+    "@parcel/transformer-sass": "^2.2.0",
+    "@parcel/transformer-webmanifest": "^2.2.0",
+    "parcel": "^2.2.0"
+  },
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}
