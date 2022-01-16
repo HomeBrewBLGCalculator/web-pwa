@@ -1,10 +1,14 @@
 import {manifest, version} from '@parcel/service-worker';
 
 const cacheName = version;
+
+console.warn(manifest);
 async function install() {
-  console.warn(manifest);
   const cache = await caches.open(cacheName);
   await cache.addAll(manifest);
+  await cache.addAll([
+    '/',
+  ])
 }
 
 addEventListener('install', e => e.waitUntil(install()));
@@ -29,28 +33,37 @@ const fetchWorkerRemote = async (e) => {
   return fetch(e.request);
 }
 
-async function fetchWorker(e) {
+const doFetch = (e) => {
   e.respondWith((async () => {
-    let cachedResponse;
+    const url = e.request.url
     try {
-      console.log(`[Service Worker]: request for ${e.request.url}`);
-      const u = new URL(e.request.url);
+      console.log(`[Service Worker]: request for ${url}`);
+      const u = new URL(url);
       const isLocal = u.hostname.startsWith('localhost');
-      console.log('[Service Worker]: is localhost?', isLocal);
-      const cachedResponse = await getCachedResponse(e);
-      console.log(`[Service Worker]: have cached?`, cachedResponse);
+      const isSelfDomain = u.hostname === self.location.hostname;
+      const canCache = !isLocal && isSelfDomain;
 
-      if (!isLocal && cachedResponse) {
-        return cachedResponse;
+      console.log('Trying to fetch', url);
+      const result = await fetchWorkerRemote(e);
+      console.log('Fetched', result);
+
+      if (canCache) {
+        console.log('Add to cache', url);
+        const cache = caches.open(cacheName);
+        cache.add(result);
       }
-      console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
-      return fetchWorkerRemote(e);
+
+      return result;
     } catch (error) {
-      console.log(`[Service Worker]: No cached resource, throwing. ${e.request.url}`);
+      const cached = await getCachedResponse(e);
+      console.log(`Fetch for url ${url} failed, cached version`, cached);
+      if (cached) {
+        return cached;
+      }
 
       throw error;
     }
-  })())
+  })());
 }
 
-addEventListener('fetch', fetchWorker)
+addEventListener('fetch', doFetch)
