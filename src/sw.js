@@ -18,13 +18,38 @@ async function activate() {
 
 addEventListener('activate', e => e.waitUntil(activate()));
 
+const getCachedResponse = async (e) => {
+  const cache = await caches.open(cacheName);
+  const cachedResponse = cache.match(e.request);
+
+  return cachedResponse;
+}
+
+const fetchWorkerRemote = async (e) => {
+  return fetch(e.request);
+}
+
 async function fetchWorker(e) {
   e.respondWith((async () => {
-    console.warn(e.request);
-    const r = await caches.match(e.request);
-    console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
-    if (r) { return r; }
-    await fetch(e.request);
+    let cachedResponse;
+    try {
+      console.log(`[Service Worker]: request for ${e.request.url}`);
+      const u = new URL(e.request.url);
+      const isLocal = u.hostname.startsWith('localhost');
+      console.log('[Service Worker]: is localhost?', isLocal);
+      const cachedResponse = await getCachedResponse(e);
+      console.log(`[Service Worker]: have cached?`, cachedResponse);
+
+      if (!isLocal && cachedResponse) {
+        return cachedResponse;
+      }
+      console.log(`[Service Worker] Fetching resource: ${e.request.url}`);
+      return fetchWorkerRemote(e);
+    } catch (error) {
+      console.log(`[Service Worker]: No cached resource, throwing. ${e.request.url}`);
+
+      throw error;
+    }
   })())
 }
 
